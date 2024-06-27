@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+// NotesScreen.js
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Platform, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
+import { NotesContext } from '../context/NotesContext'; // Adjust import path as necessary
 
 const colors = {
   primary: '#3498db',
@@ -17,6 +19,8 @@ const NotesScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [image, setImage] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const { addNote } = useContext(NotesContext);
 
   const handleSave = () => {
     if (!title || !content) {
@@ -24,6 +28,8 @@ const NotesScreen = ({ navigation }) => {
       return;
     }
 
+    const note = { title, content, date: date.toLocaleDateString(), image, fileName };
+    addNote(date.toLocaleDateString(), note);
     Alert.alert('Sukces', 'Notatka została zapisana');
     navigation.goBack();
   };
@@ -46,8 +52,10 @@ const NotesScreen = ({ navigation }) => {
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setImage(result.uri);
+    if (!result.canceled && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setImage(uri);
+      setFileName(uri.split('/').pop());
     }
   };
 
@@ -80,7 +88,12 @@ const NotesScreen = ({ navigation }) => {
           />
         )}
         <Button title="Dodaj Zdjęcie" onPress={pickImage} color={colors.secondary} />
-        {image && <Image source={{ uri: image }} style={styles.image} />}
+        {image && (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: image }} style={styles.image} />
+            <Text style={styles.fileName}>Zdjęcie dodane: {fileName}</Text>
+          </View>
+        )}
         <View style={styles.buttonContainer}>
           <Button title="Anuluj" onPress={handleCancel} color={colors.primary} />
           <Button title="Zapisz" onPress={handleSave} color={colors.primary} />
@@ -129,11 +142,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  imageContainer: {
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   image: {
     width: 200,
     height: 200,
-    alignSelf: 'center',
     marginTop: 10,
+  },
+  fileName: {
+    fontSize: 16,
+    color: colors.primary,
+    marginTop: 5,
   },
 });
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import React, { useState } from 'react'; // Importowanie funkcji useState z React do zarządzania stanem komponentu.
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'; // Importowanie komponentów z React Native.
+import { useNavigation } from '@react-navigation/native'; // Importowanie hooka useNavigation do nawigacji.
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'; // Importowanie animacji z react-native-reanimated.
 
 const colors = {
   primary: '#3498db',
@@ -11,25 +11,37 @@ const colors = {
 };
 
 const RegisterScreen = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const navigation = useNavigation();
+  const [firstName, setFirstName] = useState(''); // Inicjalizacja stanu imienia.
+  const [lastName, setLastName] = useState(''); // Inicjalizacja stanu nazwiska.
+  const [email, setEmail] = useState(''); // Inicjalizacja stanu email.
+  const [password, setPassword] = useState(''); // Inicjalizacja stanu hasła.
+  const [confirmPassword, setConfirmPassword] = useState(''); // Inicjalizacja stanu potwierdzenia hasła.
+  const [emailError, setEmailError] = useState(''); // Inicjalizacja stanu błędu walidacji emaila.
+  const navigation = useNavigation(); // Hook do nawigacji.
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
 
   const handleRegister = () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert('Błąd', 'Proszę wypełnić wszystkie pola');
+      Alert.alert('Błąd', 'Proszę wypełnić wszystkie pola'); // Wyświetlanie alertu w przypadku niewypełnionych pól.
       return;
     }
+    if (!validateEmail(email)) {
+      setEmailError('Proszę wprowadzić prawidłowy adres e-mail'); // Ustawianie błędu walidacji emaila.
+      return;
+    } else {
+      setEmailError(''); // Resetowanie błędu walidacji emaila.
+    }
     if (password !== confirmPassword) {
-      Alert.alert('Błąd', 'Hasła muszą być takie same');
+      Alert.alert('Błąd', 'Hasła muszą być takie same'); // Wyświetlanie alertu w przypadku niezgodności haseł.
       return;
     }
     // Replace with real registration logic
-    Alert.alert('Sukces', 'Konto zostało utworzone');
-    navigation.navigate('Login');
+    Alert.alert('Sukces', 'Konto zostało utworzone'); // Wyświetlanie alertu sukcesu.
+    navigation.navigate('Login'); // Nawigacja do ekranu logowania.
   };
 
   return (
@@ -55,6 +67,7 @@ const RegisterScreen = () => {
           onChangeText={setEmail}
           keyboardType="email-address"
         />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
         <TextInput
           style={styles.input}
           placeholder="Hasło"
@@ -94,6 +107,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.lightBackground,
     borderRadius: 5,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
     marginBottom: 10,
   },
 });

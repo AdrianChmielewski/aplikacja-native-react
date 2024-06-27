@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,14 +10,14 @@ import LoginScreen from './screens/LoginScreen';
 import NotesScreen from './screens/NotesScreen';
 import ParticipantsScreen from './screens/ParticipantsScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import StatisticsScreen from './screens/StatisticsScreen';
+import { NotesProvider } from './context/NotesContext'; // Import NotesProvider
 
 const Stack = createStackNavigator();
 
 const CustomHeader = () => {
   return (
     <LinearGradient
-      colors={['#74ebd5', '#ACB6E5']} 
+      colors={['#74ebd5', '#ACB6E5']}
       style={styles.headerContainer}
     >
       <View style={styles.header}>
@@ -28,21 +29,22 @@ const CustomHeader = () => {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          header: () => <CustomHeader />,
-        }}
-      >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="AddMeeting" component={AddMeetingScreen} />
-        <Stack.Screen name="Notes" component={NotesScreen} />
-        <Stack.Screen name="Participants" component={ParticipantsScreen} />
-        <Stack.Screen name="Statistics" component={StatisticsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <NotesProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            header: () => <CustomHeader />,
+          }}
+        >
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Calendar" component={CalendarScreen} />
+          <Stack.Screen name="AddMeeting" component={AddMeetingScreen} />
+          <Stack.Screen name="Notes" component={NotesScreen} />
+          <Stack.Screen name="Participants" component={ParticipantsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NotesProvider>
   );
 };
 

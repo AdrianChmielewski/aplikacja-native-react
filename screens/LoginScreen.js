@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { SlideInRight, SlideOutLeft } from 'react-native-reanimated';
 
 const colors = {
   primary: '#3498db',
   secondary: '#2ecc71',
-  background: '#ecf0f1',
+  background: '#ffffff', // Zmiana koloru tła na biały
   lightBackground: '#bdc3c7',
 };
 
@@ -25,8 +25,8 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View entering={SlideInRight} exiting={SlideOutLeft}>
-        <Text style={styles.title}>Witamy w Biznesowym Asystencie Spotkań</Text>
+      <Animated.View entering={SlideInRight} exiting={SlideOutLeft} style={styles.animatedContainer}>
+        <Image source={require('../assets/images/logo.png')} style={styles.logo} />
         <TextInput
           style={styles.input}
           placeholder="E-mail"
@@ -55,11 +55,15 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.background,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: colors.primary,
+  animatedContainer: {
+    alignItems: 'center',
+  },
+  logo: {
+    width: 250, // Zwiększenie szerokości
+    height: 250, // Zwiększenie wysokości
+    resizeMode: 'contain',
+    marginBottom: 30, // Większa przestrzeń poniżej logo
+    marginTop: -20, // Przesunięcie logo minimalnie do góry
   },
   input: {
     width: '100%',
